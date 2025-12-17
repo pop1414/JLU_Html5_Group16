@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "pinia": "^3.0.4",
+    "vant": "^4.9.22",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },
