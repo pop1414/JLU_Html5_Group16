@@ -8,6 +8,16 @@ const routes = [
     component: HomeView,
   },
   {
+    path: "/category",
+    name: "category",
+    component: () => import("../views/CategoryView.vue"),
+  }, // 懒加载
+  {
+    path: "/product/:id",
+    name: "product",
+    component: () => import("../views/ProductView.vue"),
+  },
+  {
     path: "/about",
     name: "about",
     // route level code-splitting

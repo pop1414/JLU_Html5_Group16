@@ -1,5 +1,4 @@
-<template>
-  <van-button type="primary">Vant Button</van-button>
+<!-- <template>
   <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
@@ -28,4 +27,18 @@ nav {
     }
   }
 }
-</style>
+</style> -->
+
+<template>
+  <NavBar />
+  <router-view />
+  <van-tabbar>
+    <!-- 底部 Tab -->
+    <van-tabbar-item icon="home-o" to="/">首页</van-tabbar-item>
+    <van-tabbar-item icon="cart-o" to="/cart">购物车</van-tabbar-item>
+    <!-- 更多 -->
+  </van-tabbar>
+</template>
+<script setup>
+import NavBar from "@/components/NavBar.vue";
+</script>
