@@ -2,15 +2,13 @@ import { defineStore } from "pinia";
 
 export const useMainStore = defineStore("main", {
   state: () => ({
-    cart: [], // 示例：购物车状态
+    pageTitle: "电商平台", // 默认标题
+    // 其他状态
   }),
   actions: {
-    addToCart(item) {
-      this.cart.push(item);
+    setPageTitle(newTitle) {
+      this.pageTitle = newTitle;
     },
-  },
-  getters: {
-    cartTotal: (state) => state.cart.length,
   },
 });
 

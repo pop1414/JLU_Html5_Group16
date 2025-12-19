@@ -132,8 +132,4 @@ export const categories = [
   },
 ];
 
-export function getCategories() {
-  return new Promise((resolve) => setTimeout(() => resolve(categories), 500));
-}
-
 // 其他如 brands, orders 等

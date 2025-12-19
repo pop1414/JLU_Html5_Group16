@@ -1,4 +1,4 @@
-import { products } from "@/data/mock";
+import { products } from "@/data/mock.js";
 
 export function getProducts() {
   return new Promise((resolve) => setTimeout(() => resolve(products), 500)); // 模拟延迟
