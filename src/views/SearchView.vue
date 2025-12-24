@@ -89,7 +89,7 @@ const searchItem = (item) => {
 const handleSearch = (value) => {
   if (value) {
     // 执行搜索：跳转结果页或过滤
-    router.push(`/search-results?q=${encodeURIComponent(value)}`);
+    router.push({ path: "/products", query: { q: value } });
     // 可选：保存到历史
     if (!history.value.includes(value)) {
       history.value.unshift(value);

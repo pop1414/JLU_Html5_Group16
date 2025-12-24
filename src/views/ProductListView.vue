@@ -12,13 +12,21 @@
         finished-text="没有更多了"
         @load="onLoad"
       >
+        <!-- 新增：空状态 -->
+        <van-empty
+          v-if="!loading && products.length === 0"
+          description="暂无商品"
+        />
         <van-grid :column-num="2" :gutter="10">
           <van-grid-item v-for="product in products" :key="product.id">
             <van-image :src="product.img" fit="cover" />
             <div class="product-info">
-              <p>{{ product.title }}</p>
+              <p>{{ product.title || product.name }}</p>
+              <!-- 兼容 title/name -->
               <p class="price">¥{{ product.price }}</p>
-              <p class="promo">{{ product.promo }}</p>
+              <p class="promo">
+                {{ product.promo || product.description.slice(0, 20) + "..." }}
+              </p>
             </div>
           </van-grid-item>
         </van-grid>
@@ -30,7 +38,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getProductsByQuery, getProductsByCategory } from "@/api/product"; // 假设API
+import { getProductsByQuery, getProductsByCategory } from "@/api/product"; // 导入
 
 const route = useRoute();
 const router = useRouter();
@@ -42,17 +50,22 @@ const page = ref(1);
 
 const onLoad = async () => {
   loading.value = true;
-  let data;
-  const q = route.query.q; // 从搜索来
-  const category = route.query.category; // 从分类来
-  if (q) {
-    data = await getProductsByQuery(q, page.value); // API: 搜索匹配
-  } else if (category) {
-    data = await getProductsByCategory(category, page.value); // API: 分类过滤
+  let data = [];
+  const q = route.query.q; // 搜索关键词
+  const categoryId = route.query.categoryId; // 分类ID（改用 categoryId）
+  try {
+    if (q) {
+      data = await getProductsByQuery(q, page.value);
+    } else if (categoryId) {
+      data = await getProductsByCategory(categoryId, page.value);
+    }
+  } catch (error) {
+    console.error("加载商品失败:", error);
+    // 可添加 van-toast 提示
   }
   products.value.push(...data);
   page.value++;
-  if (data.length === 0) finished.value = true;
+  if (data.length < 10) finished.value = true; // 假设 limit=10
   loading.value = false;
 };
 
@@ -64,7 +77,7 @@ const onRefresh = () => {
   onLoad().finally(() => (refreshing.value = false));
 };
 
-onMounted(onLoad);
+onMounted(onLoad); // 初始加载
 </script>
 
 <style scoped>

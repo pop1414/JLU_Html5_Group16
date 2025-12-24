@@ -1,6 +1,7 @@
 export const products = [
   {
     id: 1,
+    categoryId: 21,
     name: "iPhone 14 Pro",
     price: 7999,
     img: require("@/assets/cate1.jpg"), // 图片链接
@@ -14,6 +15,7 @@ export const products = [
   },
   {
     id: 2,
+    categoryId: 62,
     name: "MacBook Pro 16",
     price: 15999,
     img: require("@/assets/cate2.jpg"), // 图片链接
@@ -27,6 +29,7 @@ export const products = [
   },
   {
     id: 3,
+    categoryId: 63,
     name: "NVIDIA RTX 3080",
     price: 6500,
     img: require("@/assets/cate3.jpg"), // 图片链接
@@ -40,6 +43,7 @@ export const products = [
   },
   {
     id: 4,
+    categoryId: 21,
     name: "Samsung Galaxy S22",
     price: 4999,
     img: require("@/assets/cate4.jpg"), // 图片链接
@@ -53,6 +57,7 @@ export const products = [
   },
   {
     id: 5,
+    categoryId: 24,
     name: "Sony WH-1000XM5",
     price: 2799,
     img: require("@/assets/cate5.jpg"), // 图片链接

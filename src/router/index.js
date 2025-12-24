@@ -14,11 +14,6 @@ const routes = [
     component: () => import("../views/CategoryView.vue"),
   }, // 懒加载
   {
-    path: "/product/:id",
-    name: "product",
-    component: () => import("../views/ProductView.vue"),
-  },
-  {
     path: "/cart",
     name: "cart",
     component: () => import("../views/CartView.vue"),
