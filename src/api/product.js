@@ -1,108 +1,231 @@
-import { products, categories } from "@/data/index"; // 新增：导入 categories
+import { products, brands, categories, productSkus } from "@/data";
 
-export function getProducts() {
-  return new Promise((resolve) => setTimeout(() => resolve(products), 500)); // 模拟延迟
+/** 扁平化分类：{ id -> name } */
+function buildCategoryMap() {
+  const map = new Map();
+  categories.forEach((p) => {
+    map.set(p.id, p.name);
+    (p.children || []).forEach((c) => map.set(c.id, c.name));
+  });
+  return map;
 }
 
-export function getProductById(id) {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve(products.find((p) => p.id === id)), 500)
+const categoryMap = buildCategoryMap();
+const brandMap = new Map(brands.map((b) => [b.id, b.name]));
+
+/** 取商品最低价（从SKU里计算） */
+function getMinPrice(productId) {
+  const skus = productSkus.filter((s) => s.productId === productId);
+  if (!skus.length) return 0;
+  return Math.min(...skus.map((s) => s.price));
+}
+
+/** 取商品默认展示SKU（最低价SKU） */
+function getDefaultSku(productId) {
+  const skus = productSkus.filter((s) => s.productId === productId);
+  if (!skus.length) return null;
+  return skus.reduce(
+    (min, cur) => (cur.price < min.price ? cur : min),
+    skus[0]
   );
 }
 
-// 按关键词搜索（优化：添加 specs 匹配，如果需要）
-export function getProductsByQuery(query, page = 1, limit = 10) {
+/** 补全商品展示字段 */
+function enrichProduct(p) {
+  const defaultSku = getDefaultSku(p.id);
+  return {
+    ...p,
+    brandName: brandMap.get(p.brandId) || "未知品牌",
+    categoryName: categoryMap.get(p.categoryId) || "未知分类",
+    price: getMinPrice(p.id),
+    originalPrice: defaultSku?.originalPrice ?? 0,
+    stock: defaultSku?.stock ?? 0,
+    skuId: defaultSku?.skuId ?? "",
+    skuImg: defaultSku?.img ?? "",
+  };
+}
+
+/** 排序 */
+function sortProducts(list, sort = "default") {
+  const arr = [...list];
+  switch (sort) {
+    case "sales_desc":
+      return arr.sort((a, b) => (b.sales || 0) - (a.sales || 0));
+    case "price_asc":
+      return arr.sort((a, b) => (a.price || 0) - (b.price || 0));
+    case "price_desc":
+      return arr.sort((a, b) => (b.price || 0) - (a.price || 0));
+    case "rating_desc":
+      return arr.sort((a, b) => (b.ratings || 0) - (a.ratings || 0));
+    default:
+      // 默认：销量 + 评分微权重
+      return arr.sort(
+        (a, b) =>
+          (b.sales || 0) +
+          (b.ratings || 0) * 100 -
+          ((a.sales || 0) + (a.ratings || 0) * 100)
+      );
+  }
+}
+
+/** 分页 */
+function paginate(list, page = 1, limit = 10) {
+  const p = Math.max(1, Number(page) || 1);
+  const l = Math.max(1, Number(limit) || 10);
+  const start = (p - 1) * l;
+  const end = start + l;
+  return {
+    list: list.slice(start, end),
+    total: list.length,
+    page: p,
+    limit: l,
+    hasMore: end < list.length,
+  };
+}
+
+// ✅ 根据搜索词，生成“分类优先级”列表（按 categories 中出现顺序）
+// 例如搜索“手机” => [21(手机通讯), 22(手机配件), 23(...)]
+function getCategoryPriorityIds(qLower, tokens) {
+  const ids = [];
+  const push = (id) => {
+    if (!ids.includes(id)) ids.push(id);
+  };
+
+  // 1) 精确匹配子类名（优先级最高）
+  for (const p of categories) {
+    for (const c of p.children || []) {
+      if ((c.name || "").toLowerCase() === qLower) push(c.id);
+    }
+  }
+
+  // 2) 精确匹配父类名：把该父类下子类按顺序加入
+  for (const p of categories) {
+    if ((p.name || "").toLowerCase() === qLower) {
+      (p.children || []).forEach((c) => push(c.id));
+    }
+  }
+
+  // 3) 模糊匹配：父类命中 -> 全部子类；子类命中 -> 该子类
+  for (const p of categories) {
+    const parentName = (p.name || "").toLowerCase();
+    if (tokens.some((t) => parentName.includes(t))) {
+      (p.children || []).forEach((c) => push(c.id));
+    }
+    for (const c of p.children || []) {
+      const childName = (c.name || "").toLowerCase();
+      if (tokens.some((t) => childName.includes(t))) push(c.id);
+    }
+  }
+
+  return ids;
+}
+
+/** ✅ 分类查询（支持父类id和子类id） */
+export function getProductsByCategory(
+  categoryId,
+  page = 1,
+  limit = 10,
+  sort = "default"
+) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      if (!query || !query.trim()) {
-        resolve([]); // 空查询返回空
+      const cid = Number(categoryId);
+
+      // 如果传的是父类id（1~6），展开children
+      const parent = categories.find((c) => c.id === cid);
+      const ids = parent?.children?.length
+        ? parent.children.map((c) => c.id)
+        : [cid];
+
+      const filtered = products
+        .filter((p) => ids.includes(p.categoryId))
+        .map(enrichProduct);
+
+      const sorted = sortProducts(filtered, sort);
+      resolve(paginate(sorted, page, limit));
+    }, 120);
+  });
+}
+
+/** ✅ 关键词搜索（匹配商品名/描述/品牌名/分类名） */
+export function getProductsByQuery(
+  query,
+  page = 1,
+  limit = 10,
+  sort = "default"
+) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const q = (query ?? "").toString().trim().toLowerCase();
+
+      if (!q) {
+        // 空关键词：默认返回全量热门（按销量+评分排序）
+        const enriched = products.map(enrichProduct);
+        const sorted = sortProducts(enriched, "default");
+        resolve(paginate(sorted, page, limit));
         return;
       }
 
-      const lowerQuery = query.toLowerCase().trim();
-      // 分词：简单拆分空格或连续中文（电商常用 jieba，但 JS 简单实现）
-      const queryTokens = lowerQuery
-        .split(/\s+/)
-        .filter((token) => token.length > 0);
+      const tokens = q.split(/\s+/).filter(Boolean);
 
-      // 步骤1: 匹配分类（优先，如果全匹配分类名，返回该类所有商品）
-      let matchedCategoryId = null;
-      categories.forEach((cat) => {
-        const lowerCatName = cat.name.toLowerCase();
-        if (queryTokens.some((token) => lowerCatName.includes(token))) {
-          matchedCategoryId = cat.id;
+      const filtered = products
+        .filter((p) => {
+          const name = (p.name || "").toLowerCase();
+          const desc = (p.description || "").toLowerCase();
+          const brandName = (brandMap.get(p.brandId) || "").toLowerCase();
+          const cateName = (categoryMap.get(p.categoryId) || "").toLowerCase();
+          return tokens.some(
+            (t) =>
+              name.includes(t) ||
+              desc.includes(t) ||
+              brandName.includes(t) ||
+              cateName.includes(t)
+          );
+        })
+        .map(enrichProduct);
+
+      // ✅ 关键改动：只在“默认排序”时启用“分类优先级”
+      if (sort === "default") {
+        const priorityIds = getCategoryPriorityIds(q, tokens);
+        if (priorityIds.length) {
+          const rankMap = new Map(priorityIds.map((id, idx) => [id, idx]));
+
+          filtered.sort((a, b) => {
+            const ra = rankMap.has(a.categoryId)
+              ? rankMap.get(a.categoryId)
+              : 999;
+            const rb = rankMap.has(b.categoryId)
+              ? rankMap.get(b.categoryId)
+              : 999;
+
+            // 先按分类优先级
+            if (ra !== rb) return ra - rb;
+
+            // 同分类里再按“默认热度”（销量 + 评分权重）
+            const hotA = (a.sales || 0) + (a.ratings || 0) * 100;
+            const hotB = (b.sales || 0) + (b.ratings || 0) * 100;
+            return hotB - hotA;
+          });
+
+          resolve(paginate(filtered, page, limit));
+          return;
         }
-        cat.children.forEach((sub) => {
-          const lowerSubName = sub.name.toLowerCase();
-          if (queryTokens.some((token) => lowerSubName.includes(token))) {
-            matchedCategoryId = sub.id; // 优先子类
-          }
-        });
-      });
-
-      let filtered = [];
-      if (matchedCategoryId) {
-        // 如果匹配分类，返回该类商品（无相关度排序，直接 filter）
-        filtered = products.filter((p) => p.categoryId === matchedCategoryId);
-      } else {
-        // 步骤2: 商品级模糊匹配（name, description, specs）
-        filtered = products
-          .map((p) => {
-            let score = 0;
-            // 匹配 name
-            if (
-              p.name &&
-              queryTokens.some((token) => p.name.toLowerCase().includes(token))
-            ) {
-              score += 3; // name 权重高
-            }
-            // 匹配 description
-            if (
-              p.description &&
-              queryTokens.some((token) =>
-                p.description.toLowerCase().includes(token)
-              )
-            ) {
-              score += 2;
-            }
-            // 匹配 specs（数组逐项）
-            if (
-              p.specs &&
-              p.specs.some((spec) =>
-                queryTokens.some((token) => spec.toLowerCase().includes(token))
-              )
-            ) {
-              score += 1;
-            }
-            return { product: p, score };
-          })
-          .filter((item) => item.score > 0) // 只保留有匹配的
-          .sort((a, b) => b.score - a.score) // 按相关度降序
-          .map((item) => item.product); // 提取商品
       }
 
-      // 步骤3: 分页
-      const start = (page - 1) * limit;
-      const end = start + limit;
-      if (filtered.length === 0)
-        console.warn(`No products found for query: ${query}`);
-      resolve(filtered.slice(start, end));
-    }, 500);
-  });
-}
-// 按分类过滤（改接收 categoryId）
-export function getProductsByCategory(categoryId, page = 1, limit = 10) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const id = parseInt(categoryId); // 确保数字
-      const filtered = products.filter((p) => p.categoryId === id);
-      const start = (page - 1) * limit;
-      const end = start + limit;
-      if (filtered.length === 0)
-        console.warn(`No products found for categoryId: ${id}`); // 日志调试
-      resolve(filtered.slice(start, end));
-    }, 500);
+      // 其它排序（销量/价格/评分）保持你原来的全局排序逻辑
+      const sorted = sortProducts(filtered, sort);
+      resolve(paginate(sorted, page, limit));
+    }, 120);
   });
 }
 
-// 类似其他函数
+/** ✅ 获取某个商品详情（带品牌/分类/默认SKU信息） */
+export function getProductDetail(productId) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const pid = Number(productId);
+      const p = products.find((x) => x.id === pid);
+      resolve(p ? enrichProduct(p) : null);
+    }, 120);
+  });
+}

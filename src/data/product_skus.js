@@ -1355,4 +1355,499 @@ export default [
     stock: 75,
     img: "https://placeholder.com/table1-nordic.jpg",
   },
+  /************************** 汽车用品类（categoryId:51/52/53/54）**************************/
+  // 5101 新能源家用轿车
+  {
+    skuId: "5101-18-1801-20-2002",
+    productId: 5101,
+    attributes: [
+      { attrId: 18, valueId: 1801 }, // 汽车类型：纯电轿车
+      { attrId: 20, valueId: 2002 }, // 续航里程：500km
+    ],
+    price: 129800,
+    originalPrice: 139800,
+    stock: 18,
+    img: "https://placeholder.com/car1-ev-500km.jpg",
+  },
+  {
+    skuId: "5101-18-1801-20-2003",
+    productId: 5101,
+    attributes: [
+      { attrId: 18, valueId: 1801 }, // 纯电轿车
+      { attrId: 20, valueId: 2003 }, // 续航里程：600km
+    ],
+    price: 139800,
+    originalPrice: 149800,
+    stock: 10,
+    img: "https://placeholder.com/car1-ev-600km.jpg",
+  },
+
+  // 5102 燃油SUV
+  {
+    skuId: "5102-18-1802-19-1901",
+    productId: 5102,
+    attributes: [
+      { attrId: 18, valueId: 1802 }, // 汽车类型：燃油SUV
+      { attrId: 19, valueId: 1901 }, // 排量：1.5T
+    ],
+    price: 159800,
+    originalPrice: 169800,
+    stock: 22,
+    img: "https://placeholder.com/car2-suv-1.5t.jpg",
+  },
+  {
+    skuId: "5102-18-1802-19-1902",
+    productId: 5102,
+    attributes: [
+      { attrId: 18, valueId: 1802 }, // 燃油SUV
+      { attrId: 19, valueId: 1902 }, // 排量：2.0T
+    ],
+    price: 179800,
+    originalPrice: 189800,
+    stock: 12,
+    img: "https://placeholder.com/car2-suv-2.0t.jpg",
+  },
+
+  // 5201 车载吸尘器 无线
+  {
+    skuId: "5201-9-901-1-101",
+    productId: 5201,
+    attributes: [
+      { attrId: 9, valueId: 901 }, // 功率：20W（实际为吸力/功率，复用）
+      { attrId: 1, valueId: 101 }, // 颜色：黑色
+    ],
+    price: 129,
+    originalPrice: 169,
+    stock: 1200,
+    img: "https://placeholder.com/carvac-black-20w.jpg",
+  },
+  {
+    skuId: "5201-9-902-1-102",
+    productId: 5201,
+    attributes: [
+      { attrId: 9, valueId: 902 }, // 功率：48W
+      { attrId: 1, valueId: 102 }, // 颜色：白色
+    ],
+    price: 159,
+    originalPrice: 199,
+    stock: 980,
+    img: "https://placeholder.com/carvac-white-48w.jpg",
+  },
+
+  // 5202 行车记录仪 2K
+  {
+    skuId: "5202-6-602-1-101",
+    productId: 5202,
+    attributes: [
+      { attrId: 6, valueId: 602 }, // 存储容量：128GB（存储卡套餐）
+      { attrId: 1, valueId: 101 }, // 颜色：黑色
+    ],
+    price: 219,
+    originalPrice: 269,
+    stock: 860,
+    img: "https://placeholder.com/dvr-black-128.jpg",
+  },
+  {
+    skuId: "5202-6-603-1-103",
+    productId: 5202,
+    attributes: [
+      { attrId: 6, valueId: 603 }, // 256GB
+      { attrId: 1, valueId: 103 }, // 银色
+    ],
+    price: 269,
+    originalPrice: 329,
+    stock: 650,
+    img: "https://placeholder.com/dvr-silver-256.jpg",
+  },
+
+  // 5203 车载手机支架（磁吸）
+  {
+    skuId: "5203-1-101-17-1702",
+    productId: 5203,
+    attributes: [
+      { attrId: 1, valueId: 101 }, // 颜色：黑色
+      { attrId: 17, valueId: 1702 }, // 风格：现代简约（支架外观）
+    ],
+    price: 79,
+    originalPrice: 99,
+    stock: 2000,
+    img: "https://placeholder.com/holder-black.jpg",
+  },
+  {
+    skuId: "5203-1-103-17-1702",
+    productId: 5203,
+    attributes: [
+      { attrId: 1, valueId: 103 }, // 银色
+      { attrId: 17, valueId: 1702 }, // 现代简约
+    ],
+    price: 79,
+    originalPrice: 99,
+    stock: 1800,
+    img: "https://placeholder.com/holder-silver.jpg",
+  },
+
+  // 5301 全合成机油 4L
+  {
+    skuId: "5301-13-1301-12-1201",
+    productId: 5301,
+    attributes: [
+      { attrId: 13, valueId: 1301 }, // 容量：4L
+      { attrId: 12, valueId: 1201 }, // 能效等级：一级（复用：代表高效配方）
+    ],
+    price: 219,
+    originalPrice: 259,
+    stock: 1500,
+    img: "https://placeholder.com/oil-4l.jpg",
+  },
+  {
+    skuId: "5301-13-1301-12-1202",
+    productId: 5301,
+    attributes: [
+      { attrId: 13, valueId: 1301 }, // 4L
+      { attrId: 12, valueId: 1202 }, // 二级（复用：标准配方）
+    ],
+    price: 199,
+    originalPrice: 239,
+    stock: 1800,
+    img: "https://placeholder.com/oil-4l-standard.jpg",
+  },
+
+  // 5302 汽车应急电源
+  {
+    skuId: "5302-6-602-1-101",
+    productId: 5302,
+    attributes: [
+      { attrId: 6, valueId: 602 }, // 存储容量：128GB（复用：容量档位）
+      { attrId: 1, valueId: 101 }, // 黑色
+    ],
+    price: 299,
+    originalPrice: 359,
+    stock: 980,
+    img: "https://placeholder.com/power-black.jpg",
+  },
+  {
+    skuId: "5302-6-603-1-102",
+    productId: 5302,
+    attributes: [
+      { attrId: 6, valueId: 603 }, // 256GB（复用：更大容量档位）
+      { attrId: 1, valueId: 102 }, // 白色
+    ],
+    price: 349,
+    originalPrice: 399,
+    stock: 720,
+    img: "https://placeholder.com/power-white.jpg",
+  },
+
+  // 5401 全包围脚垫
+  {
+    skuId: "5401-1-101-16-1602",
+    productId: 5401,
+    attributes: [
+      { attrId: 1, valueId: 101 }, // 颜色：黑色
+      { attrId: 16, valueId: 1602 }, // 家具材质：板材（复用：脚垫材质）
+    ],
+    price: 199,
+    originalPrice: 259,
+    stock: 1300,
+    img: "https://placeholder.com/mat-black.jpg",
+  },
+  {
+    skuId: "5401-1-106-16-1602",
+    productId: 5401,
+    attributes: [
+      { attrId: 1, valueId: 106 }, // 灰色
+      { attrId: 16, valueId: 1602 }, // 板材（复用：TPE材质）
+    ],
+    price: 199,
+    originalPrice: 259,
+    stock: 980,
+    img: "https://placeholder.com/mat-gray.jpg",
+  },
+
+  // 5402 车载香薰摆件
+  {
+    skuId: "5402-1-105-17-1703",
+    productId: 5402,
+    attributes: [
+      { attrId: 1, valueId: 105 }, // 颜色：红色（香型包装）
+      { attrId: 17, valueId: 1703 }, // 风格：复古（摆件风格）
+    ],
+    price: 79,
+    originalPrice: 99,
+    stock: 2500,
+    img: "https://placeholder.com/fragrance-red.jpg",
+  },
+  {
+    skuId: "5402-1-108-17-1702",
+    productId: 5402,
+    attributes: [
+      { attrId: 1, valueId: 108 }, // 绿色
+      { attrId: 17, valueId: 1702 }, // 现代简约
+    ],
+    price: 79,
+    originalPrice: 99,
+    stock: 2200,
+    img: "https://placeholder.com/fragrance-green.jpg",
+  },
+
+  // 5403 汽车遮阳挡（前挡）
+  {
+    skuId: "5403-1-101-17-1702",
+    productId: 5403,
+    attributes: [
+      { attrId: 1, valueId: 101 }, // 黑色
+      { attrId: 17, valueId: 1702 }, // 现代简约
+    ],
+    price: 99,
+    originalPrice: 129,
+    stock: 1600,
+    img: "https://placeholder.com/shade-black.jpg",
+  },
+  {
+    skuId: "5403-1-102-17-1702",
+    productId: 5403,
+    attributes: [
+      { attrId: 1, valueId: 102 }, // 白色
+      { attrId: 17, valueId: 1702 }, // 现代简约
+    ],
+    price: 99,
+    originalPrice: 129,
+    stock: 1400,
+    img: "https://placeholder.com/shade-white.jpg",
+  },
+
+  /************************** 电脑办公类（categoryId:61/62/63）**************************/
+  // 6101 iPad Pro 11英寸
+  {
+    skuId: "6101-6-603-8-804",
+    productId: 6101,
+    attributes: [
+      { attrId: 6, valueId: 603 }, // 存储容量：256GB
+      { attrId: 8, valueId: 804 }, // 屏幕尺寸：11英寸
+    ],
+    price: 6799,
+    originalPrice: 7299,
+    stock: 120,
+    img: "https://placeholder.com/ipadpro-11-256.jpg",
+  },
+  {
+    skuId: "6101-6-605-8-804",
+    productId: 6101,
+    attributes: [
+      { attrId: 6, valueId: 605 }, // 1TB
+      { attrId: 8, valueId: 804 }, // 11英寸
+    ],
+    price: 8799,
+    originalPrice: 9299,
+    stock: 65,
+    img: "https://placeholder.com/ipadpro-11-1tb.jpg",
+  },
+
+  // 6102 学习平板（含手写笔）
+  {
+    skuId: "6102-6-602-8-804",
+    productId: 6102,
+    attributes: [
+      { attrId: 6, valueId: 602 }, // 128GB
+      { attrId: 8, valueId: 804 }, // 11英寸
+    ],
+    price: 1899,
+    originalPrice: 2199,
+    stock: 280,
+    img: "https://placeholder.com/study-tablet-128.jpg",
+  },
+  {
+    skuId: "6102-6-603-8-804",
+    productId: 6102,
+    attributes: [
+      { attrId: 6, valueId: 603 }, // 256GB
+      { attrId: 8, valueId: 804 }, // 11英寸
+    ],
+    price: 2199,
+    originalPrice: 2499,
+    stock: 200,
+    img: "https://placeholder.com/study-tablet-256.jpg",
+  },
+
+  // 6103 华为MatePad 11.5
+  {
+    skuId: "6103-6-603-8-804",
+    productId: 6103,
+    attributes: [
+      { attrId: 6, valueId: 603 }, // 256GB
+      { attrId: 8, valueId: 804 }, // 11英寸（复用最接近）
+    ],
+    price: 2399,
+    originalPrice: 2799,
+    stock: 180,
+    img: "https://placeholder.com/matepad-256.jpg",
+  },
+  {
+    skuId: "6103-6-604-8-804",
+    productId: 6103,
+    attributes: [
+      { attrId: 6, valueId: 604 }, // 512GB
+      { attrId: 8, valueId: 804 }, // 11英寸
+    ],
+    price: 2799,
+    originalPrice: 3199,
+    stock: 120,
+    img: "https://placeholder.com/matepad-512.jpg",
+  },
+
+  // 6201 MacBook Pro 16
+  {
+    skuId: "6201-8-806-7-704",
+    productId: 6201,
+    attributes: [
+      { attrId: 8, valueId: 806 }, // 屏幕尺寸：16英寸
+      { attrId: 7, valueId: 704 }, // 运行内存：32GB
+    ],
+    price: 16999,
+    originalPrice: 17999,
+    stock: 35,
+    img: "https://placeholder.com/mbp16-32g.jpg",
+  },
+  {
+    skuId: "6201-8-806-7-705",
+    productId: 6201,
+    attributes: [
+      { attrId: 8, valueId: 806 }, // 16英寸
+      { attrId: 7, valueId: 705 }, // 64GB
+    ],
+    price: 19999,
+    originalPrice: 20999,
+    stock: 18,
+    img: "https://placeholder.com/mbp16-64g.jpg",
+  },
+
+  // 6202 小新Pro16 轻薄本
+  {
+    skuId: "6202-8-806-7-703",
+    productId: 6202,
+    attributes: [
+      { attrId: 8, valueId: 806 }, // 16英寸
+      { attrId: 7, valueId: 703 }, // 16GB
+    ],
+    price: 5599,
+    originalPrice: 6299,
+    stock: 120,
+    img: "https://placeholder.com/xiaoxin16-16g.jpg",
+  },
+  {
+    skuId: "6202-8-806-7-704",
+    productId: 6202,
+    attributes: [
+      { attrId: 8, valueId: 806 }, // 16英寸
+      { attrId: 7, valueId: 704 }, // 32GB
+    ],
+    price: 6499,
+    originalPrice: 7199,
+    stock: 80,
+    img: "https://placeholder.com/xiaoxin16-32g.jpg",
+  },
+
+  // 6203 拯救者Y9000P 游戏本
+  {
+    skuId: "6203-10-1003-7-703",
+    productId: 6203,
+    attributes: [
+      { attrId: 10, valueId: 1003 }, // 显卡型号：RTX 4060
+      { attrId: 7, valueId: 703 }, // 运行内存：16GB
+    ],
+    price: 8999,
+    originalPrice: 9599,
+    stock: 60,
+    img: "https://placeholder.com/y9000p-4060-16g.jpg",
+  },
+  {
+    skuId: "6203-10-1004-7-704",
+    productId: 6203,
+    attributes: [
+      { attrId: 10, valueId: 1004 }, // RTX 4090
+      { attrId: 7, valueId: 704 }, // 32GB
+    ],
+    price: 18999,
+    originalPrice: 19999,
+    stock: 20,
+    img: "https://placeholder.com/y9000p-4090-32g.jpg",
+  },
+
+  // 6301 NVIDIA RTX 3080（这里虽然是显卡，但你的分类放到了硬盘63）
+  {
+    skuId: "6301-10-1002-1-101",
+    productId: 6301,
+    attributes: [
+      { attrId: 10, valueId: 1002 }, // 显卡型号：RTX 3080
+      { attrId: 1, valueId: 101 }, // 颜色：黑色
+    ],
+    price: 4999,
+    originalPrice: 5599,
+    stock: 45,
+    img: "https://placeholder.com/rtx3080-black.jpg",
+  },
+  {
+    skuId: "6301-10-1002-1-103",
+    productId: 6301,
+    attributes: [
+      { attrId: 10, valueId: 1002 }, // RTX 3080
+      { attrId: 1, valueId: 103 }, // 银色
+    ],
+    price: 5199,
+    originalPrice: 5799,
+    stock: 35,
+    img: "https://placeholder.com/rtx3080-silver.jpg",
+  },
+
+  // 6302 移动固态硬盘 1TB
+  {
+    skuId: "6302-6-605-1-101",
+    productId: 6302,
+    attributes: [
+      { attrId: 6, valueId: 605 }, // 存储容量：1TB
+      { attrId: 1, valueId: 101 }, // 黑色
+    ],
+    price: 459,
+    originalPrice: 529,
+    stock: 680,
+    img: "https://placeholder.com/ssd-1tb-black.jpg",
+  },
+  {
+    skuId: "6302-6-606-1-103",
+    productId: 6302,
+    attributes: [
+      { attrId: 6, valueId: 606 }, // 2TB
+      { attrId: 1, valueId: 103 }, // 银色
+    ],
+    price: 699,
+    originalPrice: 799,
+    stock: 420,
+    img: "https://placeholder.com/ssd-2tb-silver.jpg",
+  },
+
+  // 6303 机械硬盘 4TB
+  {
+    skuId: "6303-6-605-1-101",
+    productId: 6303,
+    attributes: [
+      { attrId: 6, valueId: 605 }, // 1TB（复用：容量档位）
+      { attrId: 1, valueId: 101 }, // 黑色
+    ],
+    price: 499,
+    originalPrice: 559,
+    stock: 360,
+    img: "https://placeholder.com/hdd-4tb-black.jpg",
+  },
+  {
+    skuId: "6303-6-604-1-103",
+    productId: 6303,
+    attributes: [
+      { attrId: 6, valueId: 604 }, // 512GB（复用：容量档位）
+      { attrId: 1, valueId: 103 }, // 银色
+    ],
+    price: 469,
+    originalPrice: 529,
+    stock: 420,
+    img: "https://placeholder.com/hdd-4tb-silver.jpg",
+  },
 ];

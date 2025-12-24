@@ -1,93 +1,222 @@
 <template>
-  <div class="product-list">
-    <van-nav-bar title="商品列表" fixed>
-      <template #left>
-        <van-icon name="arrow-left" @click="router.back()" />
-      </template>
-    </van-nav-bar>
-    <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
-      <van-list
-        v-model:loading="loading"
-        :finished="finished"
-        finished-text="没有更多了"
-        @load="onLoad"
+  <div class="page">
+    <!-- 顶部栏 -->
+    <van-nav-bar
+      :title="title"
+      left-text="返回"
+      left-arrow
+      @click-left="router.back()"
+    />
+
+    <!-- 搜索框（可选） -->
+    <div class="search-bar">
+      <van-search
+        v-model="keyword"
+        placeholder="搜索商品/品牌/分类"
+        readonly
+        @click="goSearch"
+      />
+    </div>
+
+    <!-- 排序 -->
+    <div class="sort-bar">
+      <van-tabs v-model:active="activeSortIndex" @change="onSortChange" shrink>
+        <van-tab title="默认" />
+        <van-tab title="销量" />
+        <van-tab title="价格↑" />
+        <van-tab title="价格↓" />
+        <van-tab title="评分" />
+      </van-tabs>
+    </div>
+
+    <!-- 列表 -->
+    <van-list
+      v-model:loading="loading"
+      :finished="finished"
+      finished-text="没有更多了"
+      @load="loadMore"
+    >
+      <div v-if="!loading && products.length === 0" class="empty">
+        <van-empty description="暂无商品" />
+      </div>
+
+      <van-card
+        v-for="item in products"
+        :key="item.id"
+        :title="item.name"
+        :desc="item.description"
+        :thumb="item.mainImg || item.skuImg"
+        :price="item.price"
+        :origin-price="item.originalPrice"
+        @click="goDetail(item)"
       >
-        <!-- 新增：空状态 -->
-        <van-empty
-          v-if="!loading && products.length === 0"
-          description="暂无商品"
-        />
-        <van-grid :column-num="2" :gutter="10">
-          <van-grid-item v-for="product in products" :key="product.id">
-            <van-image :src="product.img" fit="cover" />
-            <div class="product-info">
-              <p>{{ product.title || product.name }}</p>
-              <!-- 兼容 title/name -->
-              <p class="price">¥{{ product.price }}</p>
-              <p class="promo">
-                {{ product.promo || product.description.slice(0, 20) + "..." }}
-              </p>
-            </div>
-          </van-grid-item>
-        </van-grid>
-      </van-list>
-    </van-pull-refresh>
+        <template #tags>
+          <van-tag plain type="primary" style="margin-right: 6px">
+            {{ item.brandName }}
+          </van-tag>
+          <van-tag plain type="success">
+            {{ item.categoryName }}
+          </van-tag>
+        </template>
+
+        <template #footer>
+          <div class="meta">
+            <span>销量 {{ item.sales }}</span>
+            <span>评分 {{ item.ratings }}</span>
+            <span>库存 {{ item.stock }}</span>
+          </div>
+        </template>
+      </van-card>
+    </van-list>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getProductsByQuery, getProductsByCategory } from "@/api/product"; // 导入
+import { getProductsByCategory, getProductsByQuery } from "@/api/product.js";
 
 const route = useRoute();
 const router = useRouter();
+
+const keyword = ref(route.query.query ? String(route.query.query) : "");
+const categoryId = computed(() =>
+  route.query.categoryId ? Number(route.query.categoryId) : null
+);
+
 const products = ref([]);
+const page = ref(1);
+const limit = 8;
+
 const loading = ref(false);
 const finished = ref(false);
-const refreshing = ref(false);
-const page = ref(1);
 
-const onLoad = async () => {
-  loading.value = true;
-  let data = [];
-  const q = route.query.q; // 搜索关键词
-  const categoryId = route.query.categoryId; // 分类ID（改用 categoryId）
-  try {
-    if (q) {
-      data = await getProductsByQuery(q, page.value);
-    } else if (categoryId) {
-      data = await getProductsByCategory(categoryId, page.value);
-    }
-  } catch (error) {
-    console.error("加载商品失败:", error);
-    // 可添加 van-toast 提示
+const activeSortIndex = ref(0);
+const sortKey = computed(() => {
+  return (
+    ["default", "sales_desc", "price_asc", "price_desc", "rating_desc"][
+      activeSortIndex.value
+    ] || "default"
+  );
+});
+
+const title = computed(() => {
+  if (categoryId.value) return "分类商品";
+  if (keyword.value) return `搜索：${keyword.value}`;
+  return "商品列表";
+});
+
+async function fetchList(reset = false) {
+  if (reset) {
+    page.value = 1;
+    finished.value = false;
+    products.value = [];
   }
-  products.value.push(...data);
-  page.value++;
-  if (data.length < 10) finished.value = true; // 假设 limit=10
-  loading.value = false;
-};
 
-const onRefresh = () => {
-  refreshing.value = true;
-  products.value = [];
-  page.value = 1;
-  finished.value = false;
-  onLoad().finally(() => (refreshing.value = false));
-};
+  if (finished.value) return;
 
-onMounted(onLoad); // 初始加载
+  loading.value = true;
+
+  try {
+    let res;
+    if (categoryId.value) {
+      res = await getProductsByCategory(
+        categoryId.value,
+        page.value,
+        limit,
+        sortKey.value
+      );
+    } else {
+      res = await getProductsByQuery(
+        keyword.value,
+        page.value,
+        limit,
+        sortKey.value
+      );
+    }
+
+    products.value.push(...res.list);
+    finished.value = !res.hasMore;
+    page.value++;
+  } catch (err) {
+    console.error("加载商品失败：", err);
+    finished.value = true;
+  } finally {
+    loading.value = false;
+  }
+}
+
+function goSearch() {
+  router.push("/search");
+}
+
+// 上拉加载触发
+function loadMore() {
+  fetchList(false);
+}
+
+// // 搜索
+// function onSearch(val) {
+//   // 进入搜索模式时清掉分类
+//   router.replace({
+//     path: route.path,
+//     query: { query: val },
+//   });
+// }
+
+// // 取消搜索
+// function onCancelSearch() {
+//   keyword.value = "";
+//   router.replace({ path: route.path, query: {} });
+// }
+
+// 排序改变
+function onSortChange() {
+  fetchList(true);
+}
+
+// 点击进入详情
+function goDetail(item) {
+  // 你如果有 ProductDetailView 就改成对应路由
+  router.push({ path: "/product", query: { id: item.id } });
+}
+
+// 监听路由 query 改变（分类切换 / 搜索切换）
+watch(
+  () => route.query,
+  () => {
+    keyword.value = route.query.query ? String(route.query.query) : "";
+    fetchList(true);
+  },
+  { immediate: true }
+);
 </script>
 
 <style scoped>
-.product-list {
-  margin-top: 46px;
+.page {
+  min-height: 100vh;
+  background: #f7f8fa;
 }
-.product-info {
-  text-align: center;
+
+.search-bar {
+  padding: 8px 12px;
+  background: #fff;
 }
-.price {
-  color: red;
+
+.sort-bar {
+  background: #fff;
+  margin-bottom: 6px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 12px;
+  color: #999;
+}
+
+.empty {
+  padding-top: 40px;
 }
 </style>
