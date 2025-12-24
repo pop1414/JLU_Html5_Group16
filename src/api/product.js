@@ -1,4 +1,4 @@
-import { products, categories } from "@/data/mock.js"; // 新增：导入 categories
+import { products, categories } from "@/data/index"; // 新增：导入 categories
 
 export function getProducts() {
   return new Promise((resolve) => setTimeout(() => resolve(products), 500)); // 模拟延迟

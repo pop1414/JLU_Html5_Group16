@@ -351,7 +351,7 @@ export default [
     price: 7999,
     originalPrice: 8499,
     stock: 120,
-    img: require("@/assets/iphone14/black-256.jpg"),
+    img: require("@/assets/logo.png"),
   },
   {
     skuId: "2101-6-605-1-102",
@@ -363,7 +363,7 @@ export default [
     price: 9999,
     originalPrice: 10499,
     stock: 86,
-    img: require("@/assets/iphone14/white-1tb.jpg"),
+    img: require("@/assets/logo.png"),
   },
 
   // 2102 Samsung Galaxy S22
