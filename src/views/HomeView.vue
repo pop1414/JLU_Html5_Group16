@@ -1,4 +1,15 @@
 <template>
+  <!-- 新增：顶部固定搜索栏，使用 van-search -->
+  <div class="search-header">
+    <van-search
+      v-model="searchQuery"
+      placeholder="搜索商品，如 iPhone 或 耳机"
+      shape="round"
+      :show-action="false"
+      @focus="handleFocus"
+      readonly
+    />
+  </div>
   <van-swipe class="banner" :autoplay="3000">
     <!-- 轮播图 -->
     <van-swipe-item v-for="(image, index) in images" :key="index">
@@ -90,6 +101,11 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+
+// 新增：处理焦点/点击，跳转到搜索页
+const handleFocus = () => {
+  router.push("/search"); // 跳转到专用搜索页
+};
 </script>
 
 <style scoped>
@@ -107,5 +123,23 @@ h3 {
   width: 50px;
   height: 50px;
   object-fit: cover;
+}
+
+/* 新增：固定搜索栏样式 */
+.search-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* 确保在最上层 */
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* 调整内容位置，避免被搜索栏遮挡 */
+.banner,
+.van-grid,
+.hot-products {
+  margin-top: 44px; /* van-search 默认高度约44px，根据实际调整 */
 }
 </style>
