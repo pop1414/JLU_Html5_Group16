@@ -57,11 +57,12 @@
 <script setup>
 import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
+import { useUserStore } from "@/stores/user"; // 新增导入
 import { showToast, showConfirmDialog } from "vant";
-import { userStore } from "@/stores/user";
 
 const router = useRouter();
 const cartStore = useCartStore();
+const userStore = useUserStore(); // 新增实例化
 
 // 格式化规格显示（如"颜色:黑色 尺码:M"）
 const formatSpecs = (attributes) => {
@@ -72,18 +73,31 @@ const formatSpecs = (attributes) => {
 
 // 移除确认
 const removeItem = (item) => {
+  if (!userStore.currentUserId) {
+    showToast("请先登录");
+    return;
+  }
   showConfirmDialog({
     title: "确认删除？",
     message: "删除后不可恢复",
   }).then(() => {
-    cartStore.removeItem(item.productId, item.skuId);
+    cartStore.removeItem(item.productId, item.skuId, userStore.currentUserId); // 新增userId
     showToast("已删除");
   });
 };
 
 // 更新数量
 const updateQuantity = (item) => {
-  cartStore.updateQuantity(item.productId, item.skuId, item.quantity);
+  if (!userStore.currentUserId) {
+    showToast("请先登录");
+    return;
+  }
+  cartStore.updateQuantity(
+    item.productId,
+    item.skuId,
+    item.quantity,
+    userStore.currentUserId
+  ); // 新增userId
 };
 
 // 去结算（占位，后续实现订单页）

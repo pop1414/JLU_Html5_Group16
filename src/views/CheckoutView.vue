@@ -75,8 +75,9 @@ onMounted(() => {
     orderItems.value = JSON.parse(itemsStr);
   }
   // 默认选第一个地址
-  if (userStore.userInfo?.addresses?.length) {
-    selectedAddress.value = userStore.userInfo.addresses[0];
+  if (userStore.currentUserInfo?.addresses?.length) {
+    // 改用currentUserInfo（getters）
+    selectedAddress.value = userStore.currentUserInfo.addresses[0];
   }
 });
 
@@ -110,7 +111,7 @@ const submitOrder = () => {
     return;
   }
   showToast("支付成功！");
-  if (route.query.fromCart) cartStore.clearCart(); // 从车来，清车
+  if (route.query.fromCart) cartStore.clearCart(userStore.currentUserId); // 新增userId
   router.push("/orders"); // 跳订单列表（后续做）
 };
 </script>

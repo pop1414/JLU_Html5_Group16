@@ -111,19 +111,18 @@ import {
   getProductDetail,
   getProductSkus,
   getProductAttributes,
-} from "@/api/product.js"; // 调整路径
-import { showToast } from "vant"; // 用于提示
+} from "@/api/product.js";
 import { useCartStore } from "@/stores/cart";
 import { useUserStore } from "@/stores/user";
-import { showConfirmDialog } from "vant";
+import { showToast, showConfirmDialog } from "vant";
 
 const route = useRoute();
 const router = useRouter();
 const product = ref({});
 const skus = ref([]);
 const attributes = ref([]);
-const selectedAttrs = ref({}); // { attrId: valueId }
-const currentSku = ref({}); // 当前匹配的SKU
+const selectedAttrs = ref({});
+const currentSku = ref({});
 const cartStore = useCartStore();
 const userStore = useUserStore();
 
@@ -169,7 +168,16 @@ const addToCart = () => {
     showToast("库存不足");
     return;
   }
-  cartStore.addItem(product.value, currentSku.value, 1); // 默认加1
+  if (!userStore.currentUserId) {
+    showToast("请先登录");
+    return;
+  }
+  cartStore.addItem(
+    product.value,
+    currentSku.value,
+    1,
+    userStore.currentUserId
+  );
   showToast("已加入购物车");
 };
 
@@ -183,7 +191,7 @@ const buyNow = () => {
       title: "未登录",
       message: "请先登录以继续购买",
     }).then(() => {
-      router.push("/login"); // 后续做登录页
+      router.push("/login");
     });
     return;
   }

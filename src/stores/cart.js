@@ -1,72 +1,90 @@
 import { defineStore } from "pinia";
-//import { ref } from "vue"; // 如果需要额外ref
+import { useUserStore } from "@/stores/user.js"; // 导入userStore
 
 export const useCartStore = defineStore("cart", {
-  state: () => ({
-    items: [], // [{ productId, skuId, quantity, product: {name, price, img, ...}, sku: {attributes, ...} }]
-  }),
+  state: () => ({}), // 移除items，使用动态getters
   actions: {
-    // 添加商品（从详情页调用）
-    addItem(product, sku, quantity = 1) {
-      const existing = this.items.find(
+    // 添加商品（传入userId）
+    addItem(product, sku, quantity = 1, userId) {
+      const userStore = useUserStore();
+      const user = userStore.users.find((u) => u.id === userId);
+      if (!user) throw new Error("用户不存在");
+      const items = user.info.cartItems || [];
+      const existing = items.find(
         (item) => item.productId === product.id && item.skuId === sku.skuId
       );
       if (existing) {
         existing.quantity += quantity;
-        if (existing.quantity > sku.stock) existing.quantity = sku.stock; // 防超库存
+        if (existing.quantity > sku.stock) existing.quantity = sku.stock;
       } else {
-        this.items.push({
+        items.push({
           productId: product.id,
           skuId: sku.skuId,
           quantity,
-          product, // 存快照，防数据变
-          sku, // 存选中SKU
+          product,
+          sku,
         });
       }
-      this.saveToLocal();
+      user.info.cartItems = items;
+      userStore.saveToLocal(); // 统一保存到userStore
     },
     // 移除商品
-    removeItem(productId, skuId) {
-      this.items = this.items.filter(
+    removeItem(productId, skuId, userId) {
+      const userStore = useUserStore();
+      const user = userStore.users.find((u) => u.id === userId);
+      if (!user) return;
+      user.info.cartItems = (user.info.cartItems || []).filter(
         (item) => !(item.productId === productId && item.skuId === skuId)
       );
-      this.saveToLocal();
+      userStore.saveToLocal();
     },
     // 更新数量
-    updateQuantity(productId, skuId, quantity) {
-      const item = this.items.find(
+    updateQuantity(productId, skuId, quantity, userId) {
+      const userStore = useUserStore();
+      const user = userStore.users.find((u) => u.id === userId);
+      if (!user) return;
+      const item = (user.info.cartItems || []).find(
         (item) => item.productId === productId && item.skuId === skuId
       );
       if (item) {
-        item.quantity = Math.max(1, Math.min(quantity, item.sku.stock)); // 1~库存间
-        this.saveToLocal();
+        item.quantity = Math.max(1, Math.min(quantity, item.sku.stock));
+        userStore.saveToLocal();
       }
     },
-    // 清空购物车（结算后用）
-    clearCart() {
-      this.items = [];
-      this.saveToLocal();
+    // 清空购物车
+    clearCart(userId) {
+      const userStore = useUserStore();
+      const user = userStore.users.find((u) => u.id === userId);
+      if (user) {
+        user.info.cartItems = [];
+        userStore.saveToLocal();
+      }
     },
-    // 持久化
-    saveToLocal() {
-      localStorage.setItem("cart", JSON.stringify(this.items));
-    },
-    // 初始化从local加载
-    loadFromLocal() {
-      const saved = localStorage.getItem("cart");
-      if (saved) this.items = JSON.parse(saved);
-    },
+    // 加载：无需单独load，由userStore.loadFromLocal()处理
   },
   getters: {
+    // 当前用户items
+    items: () => {
+      const userStore = useUserStore();
+      if (!userStore.currentUserId) return [];
+      const user = userStore.users.find(
+        (u) => u.id === userStore.currentUserId
+      );
+      return user ? user.info.cartItems || [] : [];
+    },
     // 总件数
-    totalCount: (state) =>
-      state.items.reduce((sum, item) => sum + item.quantity, 0),
+    totalCount: (state) => {
+      const items = state.items; // 使用getters chaining
+      return items.reduce((sum, item) => sum + item.quantity, 0);
+    },
     // 总价
-    totalPrice: (state) =>
-      state.items.reduce(
+    totalPrice: (state) => {
+      const items = state.items;
+      return items.reduce(
         (sum, item) => sum + item.sku.price * item.quantity,
         0
-      ),
+      );
+    },
     // 是否为空
     isEmpty: (state) => state.items.length === 0,
   },

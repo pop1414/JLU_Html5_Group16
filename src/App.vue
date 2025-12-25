@@ -15,13 +15,12 @@
 import { ref } from "vue";
 import NavBar from "@/components/NavBar.vue";
 import { onMounted } from "vue";
-import { useCartStore } from "@/stores/cart.js";
-import { useUserStore } from "@/stores/user.js"; // 引入 userStore
-const cartStore = useCartStore();
+import { useUserStore } from "@/stores/user.js"; // 修正为user.js（假设文件名）
+
 const userStore = useUserStore();
 onMounted(() => {
-  cartStore.loadFromLocal();
-  userStore.loadFromLocal();
+  userStore.loadFromLocal(); // 只调用userStore加载（包括cart数据）
+  // 移除: cartStore.loadFromLocal();  // 已删除，因为cart.js无此方法
 });
 
 const active = ref(0); // 默认选中第一个（首页），可选：根据路由动态设置
