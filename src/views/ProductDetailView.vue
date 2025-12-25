@@ -168,8 +168,15 @@ const addToCart = () => {
     showToast("库存不足");
     return;
   }
-  if (!userStore.currentUserId) {
-    showToast("请先登录");
+  if (!userStore.isLoggedIn) {
+    showConfirmDialog({
+      title: "未登录",
+      message: "请先登录",
+    })
+      .then(() => {
+        router.push("/login");
+      })
+      .catch(() => {});
     return;
   }
   cartStore.addItem(
@@ -190,9 +197,11 @@ const buyNow = () => {
     showConfirmDialog({
       title: "未登录",
       message: "请先登录以继续购买",
-    }).then(() => {
-      router.push("/login");
-    });
+    })
+      .then(() => {
+        router.push("/login");
+      })
+      .catch(() => {});
     return;
   }
   // 不加车，直接跳结算，传临时订单项

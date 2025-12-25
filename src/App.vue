@@ -1,5 +1,6 @@
 <template>
-  <NavBar />
+  <!-- ✅ 只有允许的页面才显示全局 NavBar -->
+  <NavBar v-if="showNavBar" />
 
   <!-- 页面容器：tabbar 显示时给底部留空间 -->
   <div :class="['page', { 'with-tabbar': showTabbar }]">
@@ -36,6 +37,14 @@ const showTabbar = computed(() => {
       Object.prototype.hasOwnProperty.call(r.meta || {}, "showTabbar")
     );
   return record?.meta?.showTabbar === true;
+});
+
+// ✅ 控制全局 NavBar：默认显示；如果路由 meta.showNavBar === false 就隐藏
+const showNavBar = computed(() => {
+  const r = [...route.matched]
+    .reverse()
+    .find((x) => x.meta && "showNavBar" in x.meta);
+  return r ? r.meta.showNavBar !== false : true;
 });
 
 onMounted(() => {

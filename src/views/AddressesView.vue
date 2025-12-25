@@ -30,11 +30,9 @@
         </template>
 
         <template #right-icon>
-          <van-icon
-            name="delete-o"
-            class="delete"
-            @click.stop="removeAddress(index)"
-          />
+          <span class="delete-wrap" @click.stop="removeAddress(index)">
+            <van-icon name="delete-o" class="delete"
+          /></span>
         </template>
       </van-cell>
     </van-cell-group>
@@ -165,13 +163,33 @@ const saveAdd = () => {
 };
 
 const removeAddress = (index) => {
-  showConfirmDialog({ title: "确认删除该地址？" })
+  showConfirmDialog({
+    title: "确认删除",
+    message: "确定要删除该地址吗？",
+    confirmButtonText: "删除",
+    cancelButtonText: "取消",
+  })
     .then(() => {
-      userStore.removeAddress(index);
-      addresses.value = userStore.currentUserInfo.addresses;
+      // 1) 删除本地列表
+      const list = [...addresses.value];
+      const removed = list.splice(index, 1)[0];
+
+      // 2) 如果删的是默认地址，且还有其它地址 -> 自动把第一个设为默认
+      if (removed?.isDefault && list.length) {
+        list[0].isDefault = true;
+      }
+
+      // 3) 写回 store（持久化）
+      userStore.updateInfo({ addresses: list });
+
+      // 4) 同步页面显示
+      addresses.value = list;
+
       showToast("删除成功");
     })
-    .catch(() => {});
+    .catch(() => {
+      // 用户取消：不做事，但必须 catch，避免 ERROR cancel
+    });
 };
 
 const setDefault = (index) => {

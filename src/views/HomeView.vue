@@ -3,7 +3,7 @@
   <div class="search-header">
     <van-search
       v-model="searchQuery"
-      placeholder="搜索商品，如 iPhone 或 耳机"
+      placeholder="搜索商品，如 手机 或 笔记本"
       shape="round"
       :show-action="false"
       @focus="handleFocus"
