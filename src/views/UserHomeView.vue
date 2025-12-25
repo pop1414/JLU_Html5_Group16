@@ -1,6 +1,6 @@
 <template>
   <div class="user-page">
-    <van-nav-bar title="我的" />
+    <!-- <van-nav-bar title="我的" /> -->
     <van-cell-group v-if="userStore.isLoggedIn">
       <van-cell title="昵称" :value="userInfo.name" is-link @click="goEdit" />
       <van-cell title="邮箱" :value="userInfo.email" />

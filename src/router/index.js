@@ -4,18 +4,23 @@ import { useMainStore } from "@/stores/index";
 import { useUserStore } from "@/stores/user.js";
 
 const routes = [
-  { path: "/", name: "home", component: HomeView, meta: { title: "首页" } },
+  {
+    path: "/",
+    name: "home",
+    component: HomeView,
+    meta: { title: "首页", showTabbar: true },
+  },
   {
     path: "/category",
     name: "category",
     component: () => import("../views/CategoryView.vue"),
-    meta: { title: "分类" },
+    meta: { title: "分类", showTabbar: true },
   },
   {
     path: "/cart",
     name: "cart",
     component: () => import("../views/CartView.vue"),
-    meta: { title: "购物车" },
+    meta: { title: "购物车", showTabbar: true },
   },
   {
     path: "/search",
@@ -62,7 +67,7 @@ const routes = [
     path: "/user",
     name: "user",
     component: () => import("../views/UserView.vue"),
-    meta: { title: "我的", requiresAuth: true }, // ✅ 父级加 requiresAuth：默认所有子页面都要登录
+    meta: { title: "我的", requiresAuth: true, showTabbar: true }, // ✅ 父级加 requiresAuth：默认所有子页面都要登录
     children: [
       // 默认子路由：访问 /user 时显示这个（比如个人中心首页）
       {
@@ -76,25 +81,25 @@ const routes = [
         path: "edit-profile",
         name: "editProfile",
         component: () => import("../views/EditProfileView.vue"),
-        meta: { title: "修改资料" },
+        meta: { title: "修改资料", showTabbar: false },
       },
       {
         path: "addresses",
         name: "addresses",
         component: () => import("../views/AddressesView.vue"),
-        meta: { title: "地址管理" },
+        meta: { title: "地址管理", showTabbar: false },
       },
       {
         path: "orders",
         name: "orders",
         component: () => import("../views/OrdersView.vue"),
-        meta: { title: "我的订单" },
+        meta: { title: "我的订单", showTabbar: false },
       },
       {
         path: "favorites",
         name: "favorites",
         component: () => import("../views/FavoritesView.vue"),
-        meta: { title: "我的收藏" },
+        meta: { title: "我的收藏", showTabbar: false },
       },
     ],
   },

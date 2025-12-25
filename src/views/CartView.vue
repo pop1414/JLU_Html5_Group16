@@ -1,6 +1,6 @@
 <template>
   <div class="cart-page">
-    <van-nav-bar title="购物车" left-arrow @click-left="router.back()" />
+    <!-- <van-nav-bar title="购物车" left-arrow @click-left="router.back()" /> -->
 
     <van-list v-if="!cartStore.isEmpty">
       <van-cell-group
@@ -46,6 +46,7 @@
     <!-- 底部结算栏 -->
     <van-submit-bar
       v-if="!cartStore.isEmpty"
+      class="cart-submit"
       :price="cartStore.totalPrice * 100"
       :label="`共${cartStore.totalCount}件`"
       button-text="去结算"
@@ -132,5 +133,14 @@ const goCheckout = () => {
 }
 .price {
   color: #ee0a24;
+}
+/* 有商品时 submit-bar 出现，需要给页面再多留 submit-bar 的空间 */
+.cart-page:has(.cart-submit) {
+  padding-bottom: 112px; /* tabbar 56 + submitbar 56 */
+}
+
+/* 关键：把 submit-bar 往上顶，让底部留给 tabbar */
+.cart-submit {
+  bottom: 56px !important;
 }
 </style>
