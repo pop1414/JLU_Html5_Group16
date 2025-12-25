@@ -31,11 +31,15 @@ const goOrders = () => router.push("/orders");
 const goFavorites = () => router.push("/favorites");
 
 const logout = () => {
-  showConfirmDialog({ title: "确认退出？" }).then(() => {
-    userStore.logout();
-    showToast("已退出");
-    router.push("/");
-  });
+  showConfirmDialog({ title: "确认退出？" })
+    .then(() => {
+      userStore.logout();
+      showToast("已退出");
+      router.push("/");
+    })
+    .catch(() => {
+      // 如果需要，可以在这里添加逻辑，但留空即可处理“取消”
+    });
 };
 </script>
 
