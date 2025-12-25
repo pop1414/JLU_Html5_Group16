@@ -155,21 +155,6 @@ function loadMore() {
   fetchList(false);
 }
 
-// // 搜索
-// function onSearch(val) {
-//   // 进入搜索模式时清掉分类
-//   router.replace({
-//     path: route.path,
-//     query: { query: val },
-//   });
-// }
-
-// // 取消搜索
-// function onCancelSearch() {
-//   keyword.value = "";
-//   router.replace({ path: route.path, query: {} });
-// }
-
 // 排序改变
 function onSortChange() {
   fetchList(true);
@@ -177,8 +162,8 @@ function onSortChange() {
 
 // 点击进入详情
 function goDetail(item) {
-  // 你如果有 ProductDetailView 就改成对应路由
-  router.push({ path: "/product", query: { id: item.id } });
+  router.push({ name: "productDetail", params: { id: item.id } });
+  //router.push(`/product/${item.id}`);
 }
 
 // 监听路由 query 改变（分类切换 / 搜索切换）

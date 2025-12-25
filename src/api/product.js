@@ -1,4 +1,10 @@
-import { products, brands, categories, productSkus } from "@/data";
+import {
+  products,
+  brands,
+  categories,
+  productSkus,
+  productAttributes,
+} from "@/data";
 
 /** 扁平化分类：{ id -> name } */
 function buildCategoryMap() {
@@ -226,6 +232,27 @@ export function getProductDetail(productId) {
       const pid = Number(productId);
       const p = products.find((x) => x.id === pid);
       resolve(p ? enrichProduct(p) : null);
+    }, 120);
+  });
+}
+/** ✅ 获取某个商品的所有SKU */
+export function getProductSkus(productId) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const pid = Number(productId);
+      const skus = productSkus.filter((s) => s.productId === pid);
+      resolve(skus);
+    }, 120);
+  });
+}
+
+/** ✅ 获取某个商品的属性选项（分组） */
+export function getProductAttributes(productId) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const pid = Number(productId);
+      const attrs = productAttributes.filter((a) => a.productId === pid);
+      resolve(attrs);
     }, 120);
   });
 }

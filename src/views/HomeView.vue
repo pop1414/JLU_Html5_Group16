@@ -47,9 +47,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { getProducts } from "@/api/product";
 
 // 导入图片（用 import 方式）
 import banner1 from "@/assets/banner1.jpg";
@@ -78,29 +77,6 @@ const categories = ref([
   { id: 4, name: "家居", icon: category4 },
   // 添加更多
 ]);
-
-// 函数定义（现在 router 已定义）
-const toCategory = (id) => {
-  router.push(`/category/${id}`);
-};
-
-const toProduct = (id) => {
-  router.push(`/product/${id}`);
-};
-
-// 数据加载，加错误处理
-const products = ref([]);
-
-onMounted(async () => {
-  try {
-    products.value = await getProducts();
-  } catch (error) {
-    console.error("获取商品失败:", error);
-    // 可添加 Toast 提示，如 import { showToast } from 'vant'; showToast('加载失败');
-  } finally {
-    loading.value = false;
-  }
-});
 
 // 新增：处理焦点/点击，跳转到搜索页
 const handleFocus = () => {
