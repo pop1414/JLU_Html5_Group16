@@ -86,6 +86,8 @@ export const useUserStore = defineStore("user", {
         }
         // 更新 info
         user.info = { ...user.info, ...newProfile.info };
+        // 规范化 addresses（防止多个默认）
+        this.normalizeAddresses(user.info.addresses);
         this.saveToLocal();
       }
     },
@@ -95,7 +97,26 @@ export const useUserStore = defineStore("user", {
       const user = this.users.find((u) => u.id === this.currentUserId);
       if (user) {
         user.info.addresses.push(address);
+        // 规范化 addresses（防止多个默认）
+        this.normalizeAddresses(user.info.addresses);
         this.saveToLocal();
+      }
+    },
+    // 规范化 addresses：确保只有一个默认
+    normalizeAddresses(addresses) {
+      if (!addresses || addresses.length === 0) return;
+      let hasDefault = false;
+      addresses.forEach((a) => {
+        if (a.isDefault) {
+          if (hasDefault) {
+            a.isDefault = false; // 已有默认，设为 false
+          } else {
+            hasDefault = true;
+          }
+        }
+      });
+      if (!hasDefault) {
+        addresses[0].isDefault = true; // 无默认，设第一个为默认
       }
     },
     // 持久化
@@ -113,6 +134,13 @@ export const useUserStore = defineStore("user", {
       this.currentUserId =
         parseInt(localStorage.getItem("currentUserId") || "") || null;
       this.isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+      // 加载后规范化所有用户的 addresses
+      this.users.forEach((user) => {
+        if (user.info && user.info.addresses) {
+          this.normalizeAddresses(user.info.addresses);
+        }
+      });
+      this.saveToLocal(); // 保存规范化后的数据
     },
   },
   getters: {

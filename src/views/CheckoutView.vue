@@ -255,8 +255,11 @@ const submitOrder = () => {
 
   // 添加到用户订单列表
   const currentOrders = userStore.currentUserInfo?.orders || [];
-  userStore.updateInfo({ orders: [...currentOrders, newOrder] });
+  //userStore.updateInfo({ orders: [...currentOrders, newOrder] });
 
+  userStore.updateProfile({
+    info: { orders: [...currentOrders, newOrder] }, // 修改为 updateProfile，并用 info 包裹
+  });
   showToast("支付成功！");
   isSubmitted.value = true;
 

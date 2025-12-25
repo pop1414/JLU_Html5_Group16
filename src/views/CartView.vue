@@ -81,10 +81,12 @@ const removeItem = (item) => {
   showConfirmDialog({
     title: "确认删除？",
     message: "删除后不可恢复",
-  }).then(() => {
-    cartStore.removeItem(item.productId, item.skuId, userStore.currentUserId); // 新增userId
-    showToast("已删除");
-  });
+  })
+    .then(() => {
+      cartStore.removeItem(item.productId, item.skuId, userStore.currentUserId); // 新增userId
+      showToast("已删除");
+    })
+    .catch(() => {});
 };
 
 // 更新数量

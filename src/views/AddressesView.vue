@@ -179,8 +179,8 @@ const removeAddress = (index) => {
         list[0].isDefault = true;
       }
 
-      // 3) 写回 store（持久化）
-      userStore.updateInfo({ addresses: list });
+      // 3) 写回 store（持久化） - 修改为 updateProfile
+      userStore.updateProfile({ info: { addresses: list } });
 
       // 4) 同步页面显示
       addresses.value = list;
@@ -194,7 +194,8 @@ const removeAddress = (index) => {
 
 const setDefault = (index) => {
   addresses.value.forEach((a, i) => (a.isDefault = i === index));
-  userStore.updateInfo({ addresses: addresses.value });
+  // 修改为 updateProfile
+  userStore.updateProfile({ info: { addresses: addresses.value } });
   showToast("已设为默认地址");
 };
 </script>
