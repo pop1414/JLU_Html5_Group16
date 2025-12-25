@@ -54,6 +54,26 @@ const routes = [
     name: "register",
     component: () => import("../views/RegisterView.vue"),
   },
+  {
+    path: "/edit-profile",
+    name: "editProfile",
+    component: () => import("../views/EditProfileView.vue"),
+  },
+  {
+    path: "/addresses",
+    name: "addresses",
+    component: () => import("../views/AddressesView.vue"),
+  },
+  {
+    path: "/orders",
+    name: "orders",
+    component: () => import("../views/OrdersView.vue"),
+  },
+  {
+    path: "/favorites",
+    name: "favorites",
+    component: () => import("../views/FavoritesView.vue"),
+  },
 ];
 
 const router = createRouter({
