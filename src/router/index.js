@@ -26,7 +26,7 @@ const routes = [
     path: "/search",
     name: "search",
     component: () => import("../views/SearchView.vue"),
-    meta: { title: "搜索" },
+    meta: { title: "搜索", showNavBar: false },
   },
   {
     path: "/products",
@@ -61,7 +61,6 @@ const routes = [
     component: () => import("../views/RegisterView.vue"),
     meta: { title: "注册", showNavBar: false },
   },
-
   // ✅ user 作为父路由，子页面都挂在 children 下
   {
     path: "/user",

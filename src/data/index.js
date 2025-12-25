@@ -4,4 +4,4 @@ export { default as brands } from "./brands.js";
 export { default as products } from "./products.js";
 export { default as productSkus } from "./product_skus.js";
 export { default as productAttributes } from "./product_attributes.js";
-export { default as hotSearchs } from "./hot_searchs.js";
+export { default as hotSearches } from "./hot_searches.js";

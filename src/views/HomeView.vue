@@ -22,7 +22,6 @@
       :key="category.id"
       :icon="category.icon"
       :text="category.name"
-      @click="toCategory(category.id)"
     />
   </van-grid>
   <div class="hot-products">
@@ -71,10 +70,10 @@ const images = ref([banner1, banner2, banner3, banner4]);
 
 // categories mock 数据，保持其他属性不变，只改 icon 为导入的图片
 const categories = ref([
-  { id: 1, name: "电子产品", icon: category1 },
-  { id: 2, name: "服装", icon: category2 },
-  { id: 3, name: "图书", icon: category3 },
-  { id: 4, name: "家居", icon: category4 },
+  { id: 1, name: "专题", icon: category1 },
+  { id: 2, name: "话题", icon: category2 },
+  { id: 3, name: "优选", icon: category3 },
+  { id: 4, name: "特惠", icon: category4 },
   // 添加更多
 ]);
 

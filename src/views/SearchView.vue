@@ -37,7 +37,7 @@
       <div class="section-title">热门搜索</div>
       <div class="chips">
         <van-tag
-          v-for="(h, idx) in hotSearches"
+          v-for="(h, idx) in hot"
           :key="idx"
           plain
           type="primary"
@@ -80,36 +80,29 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import {
-  products,
-  brands,
-  categories,
-  hotSearches as hotSearchesData,
-} from "@/data/index.js";
+import { products, brands, categories, hotSearches } from "@/data/index.js";
 
 const router = useRouter();
 
 const keyword = ref("");
 const suggestions = ref([]);
 
-const hotSearches = ref(hotSearchesData || []);
 const history = ref([]);
 
 const HISTORY_KEY = "search_history";
 
-// const hotList = ref([
-//   { title: "你想要的这里都有", heat: "738.3万" },
-//   { title: "国家补贴至高补贴20%", heat: "630.9万" },
-//   { title: "电器空调 温暖上新", heat: "624.2万" },
-//   { title: "来助力领取明星红包", heat: "613.1万" },
-//   { title: "取暖不干燥 温度不忽...", heat: "602.0万" },
-//   { title: "圣诞美妆助力分会小...", heat: "594.2万" },
-//   { title: "温暖过冬 不再冻手", heat: "579.5万" },
-//   { title: "杜鹃圣诞，女包相伴", heat: "57万" }, // 基于你的截图添加更多模拟数据
-//   // 其他热搜...
-// ]); // 模拟热门，从API获取
+/**
+ * ✅ 把 mock 的对象数组转换成页面要用的字符串数组
+ * mock 结构是 {id, word, weight} :contentReference[oaicite:3]{index=3}
+ */
+const hot = computed(() => {
+  return (hotSearches || [])
+    .slice()
+    .sort((a, b) => (b.weight || 0) - (a.weight || 0))
+    .map((x) => x.word);
+});
 
 function loadHistory() {
   try {
