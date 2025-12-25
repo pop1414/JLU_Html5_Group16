@@ -9,6 +9,13 @@
         required
       />
       <van-field
+        v-model="phone"
+        label="手机号"
+        placeholder="请输入手机号"
+        required
+      />
+      <!-- 新增手机号字段 -->
+      <van-field
         v-model="password"
         type="password"
         label="密码"
@@ -28,6 +35,7 @@ import { useUserStore } from "@/stores/user";
 import { showToast } from "vant";
 
 const username = ref("");
+const phone = ref(""); // 新增 phone
 const password = ref("");
 const email = ref("");
 const router = useRouter();
@@ -35,7 +43,12 @@ const userStore = useUserStore();
 
 const onRegister = async () => {
   try {
-    userStore.register(username.value, password.value, email.value);
+    userStore.register(
+      username.value,
+      password.value,
+      phone.value,
+      email.value
+    );
     showToast("注册成功，已自动登录");
     router.push("/user");
   } catch (err) {

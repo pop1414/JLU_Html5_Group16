@@ -3,7 +3,13 @@
     <!-- <van-nav-bar title="我的" /> -->
     <van-cell-group v-if="userStore.isLoggedIn">
       <van-cell title="昵称" :value="userInfo.name" is-link @click="goEdit" />
-      <van-cell title="邮箱" :value="userInfo.email" />
+      <van-cell
+        title="手机号"
+        :value="currentUser.phone"
+        is-link
+        @click="goEdit"
+      />
+      <van-cell title="邮箱" :value="userInfo.email" is-link @click="goEdit" />
       <van-cell title="地址管理" is-link @click="goAddresses" />
       <van-cell title="我的订单" is-link @click="goOrders" />
       <van-button type="danger" block @click="logout">退出登录</van-button>
@@ -21,13 +27,11 @@ import { showConfirmDialog, showToast } from "vant";
 
 const router = useRouter();
 const userStore = useUserStore();
+const currentUser = userStore.currentUser; // 新增：获取整个用户对象
 const userInfo = userStore.currentUserInfo;
 
 const goLogin = () => router.push("/login");
 const goEdit = () => router.push({ name: "editProfile" });
-// const goAddresses = () => router.push("/addresses");
-// const goOrders = () => router.push("/orders");
-// const goFavorites = () => router.push("/favorites");
 
 const goAddresses = () => router.push({ name: "addresses" });
 const goOrders = () => router.push({ name: "orders" });

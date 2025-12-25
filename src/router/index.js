@@ -53,13 +53,13 @@ const routes = [
     path: "/login",
     name: "login",
     component: () => import("../views/LoginView.vue"),
-    meta: { title: "登录" },
+    meta: { title: "登录", showNavBar: false },
   },
   {
     path: "/register",
     name: "register",
     component: () => import("../views/RegisterView.vue"),
-    meta: { title: "注册" },
+    meta: { title: "注册", showNavBar: false },
   },
 
   // ✅ user 作为父路由，子页面都挂在 children 下

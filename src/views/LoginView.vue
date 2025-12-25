@@ -3,9 +3,9 @@
     <van-nav-bar title="登录" left-arrow @click-left="router.back()" />
     <van-form @submit="onLogin">
       <van-field
-        v-model="username"
-        label="用户名"
-        placeholder="请输入用户名"
+        v-model="identifier"
+        label="用户名/手机号"
+        placeholder="请输入用户名或手机号"
         required
       />
       <van-field
@@ -29,14 +29,14 @@ import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { showToast } from "vant";
 
-const username = ref("");
+const identifier = ref(""); // 修改为 identifier，支持用户名或手机号
 const password = ref("");
 const router = useRouter();
 const userStore = useUserStore();
 
 const onLogin = async () => {
   try {
-    userStore.login(username.value, password.value);
+    userStore.login(identifier.value, password.value);
     showToast("登录成功");
     router.back(); // 或push('/user')
   } catch (err) {
