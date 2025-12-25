@@ -1,34 +1,3 @@
-<!-- <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view />
-</template>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
-</style> -->
-
 <template>
   <NavBar />
   <router-view />
@@ -47,8 +16,13 @@ import { ref } from "vue";
 import NavBar from "@/components/NavBar.vue";
 import { onMounted } from "vue";
 import { useCartStore } from "@/stores/cart.js";
+import { useUserStore } from "@/stores/user.js"; // 引入 userStore
 const cartStore = useCartStore();
-onMounted(() => cartStore.loadFromLocal());
+const userStore = useUserStore();
+onMounted(() => {
+  cartStore.loadFromLocal();
+  userStore.loadFromLocal();
+});
 
 const active = ref(0); // 默认选中第一个（首页），可选：根据路由动态设置
 </script>

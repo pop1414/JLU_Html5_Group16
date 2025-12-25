@@ -58,6 +58,7 @@
 import { useRouter } from "vue-router";
 import { useCartStore } from "@/stores/cart";
 import { showToast, showConfirmDialog } from "vant";
+import { userStore } from "@/stores/user";
 
 const router = useRouter();
 const cartStore = useCartStore();
@@ -88,8 +89,20 @@ const updateQuantity = (item) => {
 // 去结算（占位，后续实现订单页）
 const goCheckout = () => {
   if (cartStore.totalCount === 0) return;
-  showToast("跳转到结算页");
-  // router.push('/checkout');  // 后续添加路由
+  if (!userStore.isLoggedIn) {
+    showConfirmDialog({
+      title: "未登录",
+      message: "请先登录以继续结算",
+    }).then(() => {
+      router.push("/login");
+    });
+    return;
+  }
+  // 传cart items到结算
+  router.push({
+    path: "/checkout",
+    query: { items: JSON.stringify(cartStore.items), fromCart: true },
+  });
 };
 </script>
 

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { useMainStore } from "@/stores/index"; // 注意：路径需匹配你的仓库实际存放位置
+import { useUserStore } from "@/stores/user.js"; // 添加这行，假设store文件是user.js
 
 const routes = [
   {
@@ -43,6 +44,16 @@ const routes = [
     name: "checkout",
     component: () => import("../views/CheckoutView.vue"),
   },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/LoginView.vue"),
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/RegisterView.vue"),
+  },
 ];
 
 const router = createRouter({
@@ -52,6 +63,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const store = useMainStore(); // 注意在路由外导入 Pinia
+  const userStore = useUserStore();
+  if (to.path === "/checkout" && !userStore.isLoggedIn) {
+    next("/login");
+  } else {
+    next();
+  }
   let title = "电商平台"; // 默认
   if (to.path === "/") title = "首页";
   if (to.path === "/category") title = "分类";

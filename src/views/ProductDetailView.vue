@@ -114,6 +114,8 @@ import {
 } from "@/api/product.js"; // 调整路径
 import { showToast } from "vant"; // 用于提示
 import { useCartStore } from "@/stores/cart";
+import { useUserStore } from "@/stores/user";
+import { showConfirmDialog } from "vant";
 
 const route = useRoute();
 const router = useRouter();
@@ -123,6 +125,7 @@ const attributes = ref([]);
 const selectedAttrs = ref({}); // { attrId: valueId }
 const currentSku = ref({}); // 当前匹配的SKU
 const cartStore = useCartStore();
+const userStore = useUserStore();
 
 onMounted(async () => {
   const id = route.params.id;
@@ -175,9 +178,24 @@ const buyNow = () => {
     showToast("库存不足");
     return;
   }
-  // 直接结算：先加到车（临时），然后跳结算
-  cartStore.addItem(product.value, currentSku.value, 1);
-  router.push("/cart"); // 或直接'/checkout'
+  if (!userStore.isLoggedIn) {
+    showConfirmDialog({
+      title: "未登录",
+      message: "请先登录以继续购买",
+    }).then(() => {
+      router.push("/login"); // 后续做登录页
+    });
+    return;
+  }
+  // 不加车，直接跳结算，传临时订单项
+  router.push({
+    path: "/checkout",
+    query: {
+      items: JSON.stringify([
+        { product: product.value, sku: currentSku.value, quantity: 1 },
+      ]),
+    },
+  });
 };
 </script>
 
