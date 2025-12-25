@@ -45,6 +45,10 @@ nav {
 <script setup>
 import { ref } from "vue";
 import NavBar from "@/components/NavBar.vue";
+import { onMounted } from "vue";
+import { useCartStore } from "@/stores/cart.js";
+const cartStore = useCartStore();
+onMounted(() => cartStore.loadFromLocal());
 
 const active = ref(0); // 默认选中第一个（首页），可选：根据路由动态设置
 </script>

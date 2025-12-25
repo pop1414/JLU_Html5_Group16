@@ -112,7 +112,8 @@ import {
   getProductSkus,
   getProductAttributes,
 } from "@/api/product.js"; // 调整路径
-// import { showToast } from "vant"; // 用于提示
+import { showToast } from "vant"; // 用于提示
+import { useCartStore } from "@/stores/cart";
 
 const route = useRoute();
 const router = useRouter();
@@ -121,6 +122,7 @@ const skus = ref([]);
 const attributes = ref([]);
 const selectedAttrs = ref({}); // { attrId: valueId }
 const currentSku = ref({}); // 当前匹配的SKU
+const cartStore = useCartStore();
 
 onMounted(async () => {
   const id = route.params.id;
@@ -159,25 +161,24 @@ watch(
   { deep: true }
 );
 
-// // 加入购物车
-// const addToCart = () => {
-//   if (currentSku.value.stock <= 0) {
-//     showToast("库存不足");
-//     return;
-//   }
-//   showToast("已加入购物车");
-//   // 实际集成cartStore.addItem(...)
-// };
+const addToCart = () => {
+  if (currentSku.value.stock <= 0) {
+    showToast("库存不足");
+    return;
+  }
+  cartStore.addItem(product.value, currentSku.value, 1); // 默认加1
+  showToast("已加入购物车");
+};
 
-// // 立即购买
-// const buyNow = () => {
-//   if (currentSku.value.stock <= 0) {
-//     showToast('库存不足');
-//     return;
-//   }
-//   showToast('跳转到结算页');
-//   // 实际跳转到订单页
-// };
+const buyNow = () => {
+  if (currentSku.value.stock <= 0) {
+    showToast("库存不足");
+    return;
+  }
+  // 直接结算：先加到车（临时），然后跳结算
+  cartStore.addItem(product.value, currentSku.value, 1);
+  router.push("/cart"); // 或直接'/checkout'
+};
 </script>
 
 <style scoped>

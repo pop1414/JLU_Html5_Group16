@@ -87,7 +87,7 @@ import {
   brands,
   categories,
   hotSearches as hotSearchesData,
-} from "@/data";
+} from "@/data/index.js";
 
 const router = useRouter();
 
