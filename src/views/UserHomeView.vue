@@ -6,7 +6,6 @@
       <van-cell title="邮箱" :value="userInfo.email" />
       <van-cell title="地址管理" is-link @click="goAddresses" />
       <van-cell title="我的订单" is-link @click="goOrders" />
-      <van-cell title="收藏" is-link @click="goFavorites" />
       <van-button type="danger" block @click="logout">退出登录</van-button>
     </van-cell-group>
     <van-empty v-else description="请登录">
@@ -32,7 +31,6 @@ const goEdit = () => router.push({ name: "editProfile" });
 
 const goAddresses = () => router.push({ name: "addresses" });
 const goOrders = () => router.push({ name: "orders" });
-const goFavorites = () => router.push({ name: "favorites" });
 
 const logout = () => {
   showConfirmDialog({ title: "确认退出？" })
